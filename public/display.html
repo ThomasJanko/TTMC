@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTMC – Écran TV</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/display.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="/js/display.js" defer></script>
+</head>
+<body class="screen-display">
+
+<div class="display-shell">
+    <div id="screen-connect" class="display-screen active">
+        <div class="display-connect-inner">
+            <h1 class="display-logo">TTMC</h1>
+            <p class="display-connect-sub">Écran TV – Connexion</p>
+            <input type="text" id="room-code-input" class="display-connect-input" placeholder="ABCD" maxlength="4">
+            <button class="display-connect-btn" onclick="watchGame()">Rejoindre 📺</button>
+            <p id="connect-error" class="display-connect-error"></p>
+        </div>
+    </div>
+
+    <div id="screen-display" class="display-screen">
+        <main id="display-stage" class="display-stage">
+            <div id="display-content" class="display-content display-animate"></div>
+        </main>
+        <footer id="display-status-bar" class="display-status-bar" aria-hidden="true"></footer>
+    </div>
+</div>
+
+</body>
+</html>

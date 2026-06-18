@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTMC - Édition Deluxe Interactive</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div id="screen-setup" class="screen active">
+        <h1>Tu Te Mets Combien ?</h1>
+        <p>Inscrivez les joueurs (max 15) et paramétrez l'objectif</p>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+            <div style="width: 70%; text-align: left;">
+                <label style="font-size: 0.85rem; color: #b5c2b7;">Nom du joueur :</label>
+                <input type="text" id="player-name" placeholder="Prénom" onkeydown="if(event.key==='Enter') addPlayer()">
+            </div>
+            <div style="width: 30%; text-align: left;">
+                <label style="font-size: 0.85rem; color: #b5c2b7;">Score cible :</label>
+                <input type="number" id="target-score" value="30" min="10" max="100">
+            </div>
+        </div>
+        <button onclick="addPlayer()" style="margin-top: 0;">Ajouter le joueur</button>
+
+        <div class="player-list" id="player-list-display">Aucun joueur ajouté.</div>
+
+        <div class="rules-box">
+            <h3 style="color: var(--primary); margin: 0 0 5px 0;">📜 Règles & Température</h3>
+            <p style="margin: 0; color: #b5c2b7;">Répondez juste pour faire monter votre jauge :</p>
+            <ul>
+                <li class="temp-froid">❄️ Froid : 0 bonne réponse</li>
+                <li class="temp-tiede">🌤️ Tiède : 1 bonne réponse de suite</li>
+                <li class="temp-chaud">🔥 Chaud : 2 bonnes réponses de suite</li>
+                <li class="temp-brulant">🌋 Brûlant : 3+ de suite (Vous gagnez +1 point BONUS !)</li>
+                <li><strong style="color: var(--success);">🗣️ Enchères :</strong> Entre chaque thème, un défi de rapidité ou de listage !</li>
+                <li><strong style="color: var(--danger);">⚔️ Duel :</strong> Tous les 3 tours, soyez le plus vif pour voler 3 points à un adversaire !</li>
+            </ul>
+        </div>
+
+        <button id="btn-start" onclick="startNewGame()" style="display: none; background: var(--success); color: white;">Lancer la partie 🚀</button>
+        <div class="hof" id="hof-display">🏆 Record : Aucun</div>
+    </div>
+
+    <div id="screen-auction-setup" class="screen auction-box">
+        <h1 style="color:var(--success); margin-top:0;">🗣️ Les Enchères ! 🗣️</h1>
+        
+        <p id="auction-starter-display" style="font-size: 1.2rem; color: #fcf6bd; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary);"></p>
+
+        <p style="color: #b5c2b7;">Débattez pour savoir qui enchérira le plus haut sur ce sujet :</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #4a4e69;">
+            <p style="font-size: 1.4rem; margin: 0; font-weight: bold; color: white;">Citez le plus de <br><span id="auction-subject" style="color:var(--primary); display:inline-block; margin-top:10px;"></span></p>
+        </div>
+
+        <p style="font-size: 0.9rem; color: #b5c2b7; margin: 15px 0;">
+            💡 <strong>Rappel :</strong> Réussite = <strong style="color: var(--success);">+4 pts</strong> | Échec = <strong style="color: var(--danger);">+1 pt</strong> pour tous les adversaires.
+        </p>
+
+        <p style="color: #b5c2b7; margin-bottom: 15px;">Une fois le gagnant décidé, sélectionnez-le ci-dessous :</p>
+        <div id="auction-player-grid" class="grid-dynamic" style="justify-content: center;"></div>
+    </div>
+
+    <div id="screen-auction-play" class="screen auction-box">
+        <h1 style="color:var(--success); margin-top:0;">🗣️ Validation 🗣️</h1>
+        <h2 id="auction-winner-name" style="margin: 20px 0; font-size: 2.5rem; color:var(--primary);">P1</h2>
+        
+        <div class="timer" id="auction-timer-display">⏱️ 45s</div>
+
+        <p style="color: #b5c2b7;">À toi de jouer ! Cite tes éléments un par un.</p>
+        <p style="color: white; margin-bottom: 20px;">Si tu réussis, tu gagnes <strong style="color:var(--success)">4 points</strong>.<br>Si tu échoues, tous les autres gagnent <strong style="color:var(--success)">1 point</strong>.</p>
+        
+        <div class="btn-group" style="justify-content: center;">
+            <button class="btn-valide" onclick="resolveAuction(true)">A réussi ✔️</button>
+            <button class="btn-erreur" onclick="resolveAuction(false)">A échoué ❌</button>
+        </div>
+    </div>
+
+    <div id="screen-auction-result" class="screen">
+        <h1 id="auction-result-title">Résultat des Enchères</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Joueur</th>
+                    <th>Nouveau Score</th>
+                    <th>Évolution</th>
+                </tr>
+            </thead>
+            <tbody id="auction-result-tbody"></tbody>
+        </table>
+        <button onclick="endAuction()" style="margin-top: 20px; background: var(--success); color: white;">Continuer ➡️</button>
+    </div>
+    <div id="screen-bid" class="screen">
+        <h3>Choix de note</h3>
+        <p>Thème de la manche :</p>
+        <h2 id="bid-theme-title">Thème</h2>
+        <p id="hidden-warning" style="color:var(--danger); font-size:0.9rem; display:none; font-weight:bold;">⚠️ Risque ! Thème révélé après le choix !</p>
+        <hr style="border-color: #4a4e69; margin: 15px 0;">
+        <div class="turn-indicator" id="bid-turn-indicator">Joueur X sur Y</div>
+        <p>C'est au tour de : <strong id="bid-player-name" style="color:var(--primary); font-size: 1.4rem;"></strong></p>
+        <p>Statut actuel : <span id="bid-player-temp"></span></p>
+        <p>Choisis ta note (les autres ne pourront plus la prendre !) :</p>
+        <div class="grid-dynamic" id="notes-grid"></div>
+    </div>
+
+    <div id="screen-transition" class="screen">
+        <h3>À ton tour de jouer !</h3>
+        <p>Le chrono va bientôt démarrer...</p>
+        <h2 id="transition-player-name" style="font-size: 2.5rem; margin: 30px 0;">Nom</h2>
+        <p style="color: #b5c2b7;">Thème : <span id="transition-theme" style="color: white; font-weight: bold;"></span></p>
+        <p style="color: #b5c2b7;">Points de base : <span id="transition-note" style="color: white; font-weight: bold;"></span></p>
+        <p id="transition-multiplier" style="color:var(--danger); font-weight:bold; display:none;">🔥 Bonus Statut Brûlant Actif (+1 point bonus) ! 🔥</p>
+        <button class="ready-btn" onclick="goToQuestionPhase()">Je suis prêt(e) ! 🚀</button>
+    </div>
+
+    <div id="screen-question" class="screen">
+        <h3>Phase de Réponses 🧠</h3>
+        <h2 id="question-theme-title">Thème</h2>
+        <div class="turn-indicator" id="question-turn-indicator">Joueur X sur Y</div>
+        
+        <div class="timer" id="timer-display">⏱️ 00s</div>
+
+        <p>Joueur : <strong id="question-player-name" style="color:var(--primary); font-size: 1.3rem;"></strong></p>
+        <p>Points en jeu : <strong id="displayed-note" style="color:var(--primary); font-size: 1.2rem;"></strong></p>
+        
+        <div style="background: #2e2f47; padding: 20px; border-radius: 8px; margin: 15px 0;">
+            <p id="question-text" style="font-size: 1.25rem; margin: 0; font-style: italic; line-height: 1.5;"></p>
+        </div>
+        
+        <button id="btn-reveal" onclick="revealAnswer()">Afficher la réponse</button>
+        
+        <div id="answer-box" class="answer-box">
+            Réponse attendue : <br><span id="answer-text" style="color: var(--primary);"></span>
+        </div>
+
+        <div id="validation-buttons" class="btn-group" style="display: none;">
+            <button class="btn-erreur" onclick="validateTurn(false)">Erroné ❌</button>
+            <button class="btn-valide" onclick="validateTurn(true)">Validé ✔️ (+$<span id="points-to-add"></span> pts)</button>
+        </div>
+    </div>
+
+    <div id="screen-duel-setup" class="screen duel-box">
+        <h1 style="color:var(--danger); margin-top:0;">⚔️ L'Heure du Duel ! ⚔️</h1>
+        <p style="color: #b5c2b7;">Le hasard a choisi un défieur...</p>
+        <p><strong id="duel-challenger-name" style="color:white; font-size:1.8rem;"></strong>, c'est ton moment !</p>
+        <hr style="border-color: #4a4e69; margin: 20px 0;">
+        <p style="color: #b5c2b7; margin-bottom: 15px;">Sélectionne la cible à qui tu vas tenter de voler 3 points :</p>
+        <div id="duel-opponent-grid" class="grid-dynamic" style="justify-content: space-between;"></div>
+    </div>
+
+    <div id="screen-duel-transition" class="screen duel-box">
+        <h1 style="color:var(--danger); margin-top:0;">⚔️ Face à Face Épique ⚔️</h1>
+        <p style="color: #b5c2b7;">Installez-vous confortablement devant l'écran...</p>
+        <h2 id="duel-transition-matchup" style="margin: 35px 0; font-size: 2.3rem;">P1 VS P2</h2>
+        <p style="color: #b5c2b7;">Soyez vifs ! Dès que la question apparaît, le premier qui crie ou donne la bonne réponse l'emporte !</p>
+        <button class="ready-btn" onclick="goToDuelQuestionPhase()">Nous sommes prêts ! 🔥</button>
+    </div>
+
+    <div id="screen-duel-question" class="screen duel-box">
+        <h3 style="color:var(--danger); margin-top:0;">🔥 DUEL FLASH 🔥</h3>
+        <h2 id="duel-matchup" style="margin: 20px 0;">P1 vs P2</h2>
+        <p style="color: #b5c2b7;">Soyez vifs ! Le premier qui donne la bonne réponse gagne.</p>
+        
+        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; margin: 15px 0; border: 1px solid #4a4e69;">
+            <p id="duel-question-text" style="font-size: 1.25rem; margin: 0; font-style: italic; color: white;"></p>
+        </div>
+        
+        <button id="btn-reveal-duel" onclick="revealDuel()">Afficher la réponse</button>
+        
+        <div id="answer-box-duel" class="answer-box" style="background: rgba(0,0,0,0.5);">
+            Réponse : <br><span id="duel-answer-text" style="color: var(--primary);"></span>
+        </div>
+
+        <div id="duel-validation-buttons" style="display: none; margin-top: 20px;">
+            <p style="color: white; margin-bottom: 10px;">Qui a donné la réponse en premier ?</p>
+            <div class="btn-group">
+                <button class="btn-valide" onclick="resolveDuel('challenger')" id="btn-win-challenger">Challenger</button>
+                <button class="btn-valide" onclick="resolveDuel('opponent')" id="btn-win-opponent">Adversaire</button>
+            </div>
+            <button class="btn-erreur" onclick="resolveDuel('nobody')" style="margin-top: 10px; background: #4a4e69;">Personne / Égalité</button>
+        </div>
+    </div>
+
+    <div id="screen-scores" class="screen">
+        <h1 id="score-title">Classement Général 🏆</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Joueur</th>
+                    <th>Temp.</th>
+                    <th style="width: 45%;">Progression / Score</th>
+                </tr>
+            </thead>
+            <tbody id="scores-table-body"></tbody>
+        </table>
+        <button id="btn-next-round" onclick="advanceRound()" style="margin-top: 20px; background: var(--success); color: white;">Manche Suivante 🔄</button>
+        <button onclick="resetGame()" style="background: #4a4e69; color: white; margin-top: 5px;">Recommencer à zéro</button>
+    </div>
+</div>
+
+</body>
+</html>

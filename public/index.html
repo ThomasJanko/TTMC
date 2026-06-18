@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTMC – Tu Te Mets Combien ?</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/index.js" defer></script>
+</head>
+<body class="screen-home">
+
+<div class="home-container">
+    <header class="home-header">
+        <h1>Tu Te Mets Combien ?</h1>
+        <p class="home-subtitle">Quiz multijoueur en temps réel</p>
+    </header>
+
+    <div class="home-cards">
+        <section class="home-card home-card-create">
+            <div class="home-card-icon">🎮</div>
+            <h2>Créer une partie</h2>
+            <p>Vous jouez et animez la partie. Les autres joueurs rejoignent avec le code affiché.</p>
+            <label class="home-label">Votre prénom *</label>
+            <input type="text" id="create-owner-name" placeholder="Prénom" onkeydown="if(event.key==='Enter') createParty()">
+            <label class="home-label">Score cible</label>
+            <input type="number" id="create-target-score" value="30" min="10" max="100">
+            <button class="home-btn home-btn-create" id="btn-create" onclick="createParty()">Créer une partie 🚀</button>
+            <p id="create-error" class="home-error" style="display: none;"></p>
+        </section>
+
+        <section class="home-card home-card-join">
+            <div class="home-card-icon">📱</div>
+            <h2>Rejoindre une partie</h2>
+            <p>Entrez le code communiqué par l'animateur et votre prénom.</p>
+            <label class="home-label">Code de la partie</label>
+            <input type="text" id="join-room-code" placeholder="ABCD" maxlength="4" class="home-code-input">
+            <label class="home-label">Votre prénom</label>
+            <input type="text" id="join-player-name" placeholder="Prénom" onkeydown="if(event.key==='Enter') joinParty()">
+            <button class="home-btn home-btn-join" onclick="joinParty()">Rejoindre 🎯</button>
+            <p id="join-error" class="home-error" style="display: none;"></p>
+        </section>
+    </div>
+
+    <footer class="home-footer">
+        <a href="/display">📺 Mode écran TV</a>
+        <span class="hof" id="hof-display">🏆 Record : Aucun</span>
+    </footer>
+</div>
+
+</body>
+</html>

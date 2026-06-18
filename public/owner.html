@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTMC – Panneau Owner</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="/js/audio.js"></script>
+    <script src="/js/owner.js" defer></script>
+</head>
+<body class="screen-owner">
+
+<a href="/" class="home-link">← Accueil</a>
+
+<div class="owner-layout">
+    <aside class="owner-sidebar" id="owner-sidebar">
+        <h3>🏆 Scores</h3>
+        <div id="sidebar-scores" class="sidebar-scores"></div>
+        <div class="phase-badge" id="phase-badge">Lobby</div>
+    </aside>
+
+    <main class="owner-main container">
+        <div id="screen-connect" class="screen active">
+            <h1>Tu Te Mets Combien ?</h1>
+            <p>Panneau de contrôle – Créez une partie</p>
+            <label style="font-size: 0.85rem; color: #b5c2b7;">Votre prénom *</label>
+            <input type="text" id="owner-name" placeholder="Prénom">
+            <label style="font-size: 0.85rem; color: #b5c2b7;">Score cible :</label>
+            <input type="number" id="target-score" value="30" min="10" max="100">
+            <button id="btn-create" onclick="createGame()">Créer une partie 🎮</button>
+            <div class="hof" id="hof-display">🏆 Record : Aucun</div>
+        </div>
+
+        <div id="screen-lobby" class="screen">
+            <p class="room-label">Code de la partie</p>
+            <div class="room-code" id="room-code-display">----</div>
+            <button class="btn-copy" onclick="copyRoomCode()">📋 Copier le code</button>
+            <p style="color: #b5c2b7;">Joueurs connectés (<span id="player-count">0</span>/15) :</p>
+            <div class="player-list" id="player-list"></div>
+            <label style="font-size: 0.85rem; color: #b5c2b7;">Score cible :</label>
+            <input type="number" id="lobby-target-score" value="30" min="10" max="100">
+            <button id="btn-start" onclick="startGame()" disabled>Lancer la partie 🚀</button>
+            <p id="owner-pause-msg" style="color: var(--danger); display: none;">⚠️ Owner déconnecté – en attente de reconnexion...</p>
+        </div>
+
+        <div id="screen-phase" class="screen">
+            <div id="phase-content"></div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

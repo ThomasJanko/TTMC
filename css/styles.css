@@ -1,0 +1,255 @@
+:root {
+    --bg-color: #1a1a2e;
+    --card-bg: #22223b;
+    --primary: #f2a65a;
+    --text: #f7f7f7;
+    --success: #2a9d8f;
+    --danger: #e76f51;
+    --disabled: #4a4e69;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text);
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+/* Animations de Flash pour les réponses */
+.flash-success { animation: flashGreen 0.6s ease-out; }
+.flash-danger { animation: flashRed 0.6s ease-out; }
+
+@keyframes flashGreen {
+    0% { background-color: #1b4d3e; }
+    100% { background-color: var(--bg-color); }
+}
+@keyframes flashRed {
+    0% { background-color: #5c2c27; }
+    100% { background-color: var(--bg-color); }
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    box-sizing: border-box;
+    position: relative;
+}
+
+h1 { color: var(--primary); margin-bottom: 15px; font-size: 2.2rem; }
+h2 { font-size: 1.8rem; margin: 10px 0; color: var(--primary); }
+h3 { color: #b5c2b7; margin: 5px 0 20px 0; }
+
+/* TRANSITIONS D'ÉCRANS */
+.screen { 
+    display: none; 
+    animation: fadeIn 0.4s ease-out forwards;
+}
+.screen.active { 
+    display: block; 
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+input, button, select {
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin: 10px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input, select { background: #4a4e69; color: white; border: 2px solid transparent; }
+input:focus, select:focus { border-color: var(--primary); outline: none; }
+
+button {
+    background: var(--primary);
+    color: #1a1a2e;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+button:hover { opacity: 0.9; transform: translateY(-1px); }
+button:active { transform: translateY(1px); }
+button:disabled { background: var(--disabled); color: #9a9caf; cursor: not-allowed; transform: none; opacity: 0.6; }
+
+.player-list {
+    text-align: left;
+    background: #4a4e69;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.grid-dynamic {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.btn-note { 
+    background: #9a8c98; 
+    color: #1a1a2e; 
+    font-size: 1.2rem; 
+    width: 60px; 
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-note:hover:not(:disabled) { background: var(--primary); color: #1a1a2e; }
+
+.answer-box {
+    background: #4a4e69;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    display: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-left: 5px solid var(--primary);
+}
+
+.btn-group { display: flex; gap: 15px; }
+.btn-valide { background: var(--success); color: white; }
+.btn-erreur { background: var(--danger); color: white; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { padding: 12px; border-bottom: 1px solid #4a4e69; text-align: left; }
+th { color: var(--primary); }
+tr:hover { background: rgba(255,255,255,0.05); }
+
+.turn-indicator { font-size: 0.9rem; color: #b5c2b7; margin-bottom: 10px; }
+
+.timer {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.progress-container {
+    background: #31334b;
+    border-radius: 10px;
+    width: 100%;
+    height: 8px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    height: 100%;
+    width: 0%;
+    transition: width 0.6s ease-out;
+}
+
+.hof {
+    font-size: 0.9rem;
+    color: #b5c2b7;
+    background: rgba(255,255,255,0.05);
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+.ready-btn {
+    background: var(--success);
+    color: white;
+    font-size: 1.3rem;
+    padding: 15px;
+    margin-top: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Température Styles */
+.temp-froid { color: #a9def9; font-weight: bold; }
+.temp-tiede { color: #fcf6bd; font-weight: bold; }
+.temp-chaud { color: #f4a261; font-weight: bold; }
+.temp-brulant { color: #e76f51; font-weight: bold; animation: pulse 1s infinite; }
+
+.rules-box {
+    background: #31334b;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: left;
+    font-size: 0.95rem;
+    border-left: 5px solid var(--primary);
+}
+.rules-box ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+/* Nouveaux styles pour le Duel */
+.duel-box { 
+    background: linear-gradient(135deg, #2a0808, #1a1a2e);
+    box-shadow: 0 0 20px rgba(231, 111, 81, 0.4);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+/* Nouveaux styles pour les Enchères */
+.auction-box { 
+    background: linear-gradient(135deg, #102a43, #1a1a2e);
+    box-shadow: 0 0 20px rgba(42, 157, 143, 0.4);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+.btn-opponent {
+    background: #4a4e69;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    width: calc(50% - 6px);
+    box-sizing: border-box;
+    text-align: center;
+}
+.btn-opponent:hover {
+    border-color: var(--danger);
+    background: #31334b;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3);
+}
+.btn-opponent strong {
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 5px;
+}
+.btn-opponent span {
+    font-size: 0.95rem;
+    color: var(--primary);
+}
