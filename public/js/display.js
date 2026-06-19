@@ -257,12 +257,17 @@ function renderDisplay() {
   updateStatusBar();
 
   switch (gs.phase) {
-    case 'lobby':
+    case 'lobby': {
       setStageTheme('default');
+      const joinUrl = getPlayerJoinUrl(gs.roomCode);
+      const joinHint = getPlayerJoinHint();
       el.innerHTML = `
-        <p class="display-section-label">Rejoignez la partie</p>
-        <div class="display-lobby-code">${gs.roomCode}</div>
-        <p class="display-lobby-hint">Scannez le code ou tapez l'URL</p>
+        <div class="display-lobby-share">
+          <div id="display-qrcode" class="share-qrcode share-qrcode-display"></div>
+          <p class="display-lobby-url">${joinUrl}</p>
+          <div class="display-lobby-code">${gs.roomCode}</div>
+          <p class="display-lobby-hint">Scanne le QR code ou va sur <strong>${joinHint}</strong></p>
+        </div>
         <p class="display-lobby-host">Partie animée par <strong>${host}</strong></p>
         <div class="display-avatar-grid">${gs.players.map(p => {
           const isHost = p.name === gs.ownerName;
@@ -272,7 +277,9 @@ function renderDisplay() {
             ${isHost ? '<span class="display-avatar-tag">Animateur</span>' : ''}
           </div>`;
         }).join('')}</div>`;
+      renderQrIntoElement('display-qrcode', joinUrl, 512);
       break;
+    }
 
     case 'bid': {
       setStageTheme('default');

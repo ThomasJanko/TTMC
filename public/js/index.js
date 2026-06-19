@@ -71,7 +71,7 @@ function joinParty() {
   }
 
   errEl.style.display = 'none';
-  const params = new URLSearchParams({ code: roomCode, name: playerName });
+  const params = new URLSearchParams({ room: roomCode, name: playerName });
   window.location.href = `/player?${params.toString()}`;
 }
 

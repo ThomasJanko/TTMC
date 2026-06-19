@@ -370,15 +370,22 @@ document.getElementById('room-code-input')?.addEventListener('input', (e) => {
 
 window.onload = () => {
   const params = new URLSearchParams(location.search);
-  const code = params.get('code');
+  const room = params.get('room') || params.get('code');
   const name = params.get('name');
-  if (code) {
-    document.getElementById('room-code-input').value = code.toUpperCase().replace(/[^A-Z]/g, '');
+  const roomInput = document.getElementById('room-code-input');
+  const nameInput = document.getElementById('player-name-input');
+
+  if (room) {
+    roomInput.value = room.toUpperCase().replace(/[^A-Z]/g, '');
   }
   if (name) {
-    document.getElementById('player-name-input').value = name;
+    nameInput.value = name;
   }
+  if (room && !name) {
+    nameInput.focus();
+  }
+
   connectWs(() => {
-    if (code && name && code.length === 4) joinGame();
+    if (room && name && room.length === 4) joinGame();
   });
 };

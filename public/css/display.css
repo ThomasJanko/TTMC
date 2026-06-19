@@ -168,6 +168,30 @@ body.screen-display {
     text-shadow: 0 0 60px rgba(242, 166, 90, 0.35);
 }
 
+.display-lobby-share {
+    margin-bottom: 2rem;
+}
+
+.display-lobby-url {
+    font-family: monospace;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    color: #b5c2b7;
+    word-break: break-all;
+    margin: 1rem auto 1.25rem;
+    max-width: 90%;
+}
+
+.share-qrcode-display {
+    margin: 0 auto 1rem;
+}
+
+.share-qrcode-display img,
+.share-qrcode-display canvas {
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
 .display-lobby-hint {
     font-size: clamp(1rem, 2vw, 1.35rem);
     color: #b5c2b7;

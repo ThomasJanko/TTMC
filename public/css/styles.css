@@ -420,6 +420,56 @@ tr:hover { background: rgba(255,255,255,0.05); }
 
 /* Display / TV → voir css/display.css */
 
+/* --- Partage / QR code --- */
+.share-qrcode {
+    display: flex;
+    justify-content: center;
+    margin: 1rem auto;
+}
+
+.share-qrcode img,
+.share-qrcode canvas {
+    display: block;
+    border-radius: 12px;
+    background: white;
+    padding: 8px;
+}
+
+.share-qrcode-owner {
+    margin: 1.25rem auto;
+}
+
+.share-link-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #b5c2b7;
+    text-align: left;
+    margin: 1rem 0 0.35rem;
+}
+
+.share-link-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+    margin-bottom: 0.75rem;
+}
+
+.share-link-input {
+    flex: 1;
+    font-size: 0.85rem !important;
+    font-family: monospace;
+    margin: 0 !important;
+    padding: 10px !important;
+}
+
+.share-copy-btn {
+    width: auto !important;
+    flex-shrink: 0;
+    margin: 0 !important;
+    padding: 10px 16px !important;
+    white-space: nowrap;
+}
+
 /* --- Home page --- */
 .screen-home {
     align-items: flex-start;

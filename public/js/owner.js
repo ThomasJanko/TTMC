@@ -138,8 +138,22 @@ function startGame() {
 
 function copyRoomCode() {
   if (roomCode) {
-    navigator.clipboard.writeText(roomCode);
+    copyTextToClipboard(roomCode);
   }
+}
+
+function copyShareLink() {
+  const input = document.getElementById('share-link-input');
+  if (input?.value) {
+    copyTextToClipboard(input.value);
+  }
+}
+
+function updateLobbyShare(code) {
+  const joinUrl = getPlayerJoinUrl(code);
+  const shareInput = document.getElementById('share-link-input');
+  if (shareInput) shareInput.value = joinUrl;
+  renderQrIntoElement('owner-qrcode', joinUrl, 256);
 }
 
 function ownerAction(action) {
@@ -223,7 +237,9 @@ function updateTimerDisplay() {
 }
 
 function renderLobby() {
-  document.getElementById('room-code-display').textContent = gameState.roomCode || roomCode;
+  const code = gameState.roomCode || roomCode;
+  document.getElementById('room-code-display').textContent = code;
+  updateLobbyShare(code);
   document.getElementById('player-count').textContent = gameState.players.length;
   document.getElementById('player-list').innerHTML = gameState.players.length
     ? gameState.players.map((p, i) => {

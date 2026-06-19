@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTMC – Panneau Owner</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="/js/share.js"></script>
     <script src="/js/audio.js"></script>
     <script src="/js/owner.js" defer></script>
 </head>
@@ -35,7 +37,13 @@
         <div id="screen-lobby" class="screen">
             <p class="room-label">Code de la partie</p>
             <div class="room-code" id="room-code-display">----</div>
-            <button class="btn-copy" onclick="copyRoomCode()">📋 Copier le code</button>
+            <div id="owner-qrcode" class="share-qrcode share-qrcode-owner"></div>
+            <label class="share-link-label">Lien de partage</label>
+            <div class="share-link-row">
+                <input type="text" id="share-link-input" class="share-link-input" readonly>
+                <button type="button" class="btn-copy share-copy-btn" onclick="copyShareLink()">Copier 📋</button>
+            </div>
+            <button class="btn-copy" onclick="copyRoomCode()">📋 Copier le code seul</button>
             <p style="color: #b5c2b7;">Joueurs connectés (<span id="player-count">0</span>/15) :</p>
             <div class="player-list" id="player-list"></div>
             <label style="font-size: 0.85rem; color: #b5c2b7;">Score cible :</label>
