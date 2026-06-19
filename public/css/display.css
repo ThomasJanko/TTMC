@@ -392,6 +392,21 @@ body.screen-display {
     margin-bottom: 1.5rem;
 }
 
+.display-qa-block {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.display-q-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #8a9399;
+    margin-bottom: 0.75rem;
+    font-style: normal;
+}
+
 .display-q-card {
     background: #2e2f47;
     border-radius: 16px;
@@ -403,17 +418,29 @@ body.screen-display {
     animation: displaySlideIn 0.5s ease-out 0.15s both;
 }
 
+.display-q-card-tv {
+    max-width: 1000px;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
 .display-q-card p {
-    font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+    font-size: clamp(1.35rem, 3vw, 2rem);
     line-height: 1.55;
     margin: 0;
     font-style: italic;
+    color: #f7f7f7;
 }
 
 .display-a-card {
-    background: rgba(42, 157, 143, 0.12);
-    border-left-color: var(--success);
+    background: rgba(42, 157, 143, 0.15);
+    border-left: 6px solid var(--success);
     margin-top: 1.25rem;
+    animation: displaySlideIn 0.5s ease-out 0.1s both;
+}
+
+.display-a-card-tv {
+    box-shadow: 0 12px 40px rgba(42, 157, 143, 0.15);
 }
 
 .display-a-card .display-a-label {
@@ -425,10 +452,16 @@ body.screen-display {
     font-style: normal;
 }
 
+.display-a-text,
 .display-a-card p {
-    color: white;
+    color: var(--success) !important;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+}
+
+.display-duel-qa .display-timer-huge {
+    margin: 1rem 0 1.5rem;
 }
 
 /* --- Scores --- */

@@ -158,6 +158,71 @@ function updateTimer() {
   el.classList.toggle('timer-danger', timeLeft <= 5);
 }
 
+function renderDisplayTimer() {
+  return `<div class="display-timer-huge${timeLeft <= 5 ? ' timer-danger' : ''}" id="display-timer">${timeLeft}</div>`;
+}
+
+function renderQuestionCard(text, label = 'Question') {
+  if (!text) return '';
+  return `
+    <div class="display-q-card display-q-card-tv">
+      <div class="display-q-label">${label}</div>
+      <p>${text}</p>
+    </div>`;
+}
+
+function renderAnswerCard(text, label = 'Réponse') {
+  if (!text) return '';
+  return `
+    <div class="display-q-card display-a-card display-a-card-tv">
+      <div class="display-a-label">${label}</div>
+      <p class="display-a-text">${text}</p>
+    </div>`;
+}
+
+function renderQuestionPhase(gs, active) {
+  return `
+    <div class="display-qa-block">
+      <span class="display-theme-badge">${gs.currentTheme?.theme || ''}</span>
+      <p class="display-q-player"><strong>${active?.name || '—'}</strong> répond</p>
+      ${renderDisplayTimer()}
+      <p class="display-q-points">${gs.currentQuestion?.points || '—'} points en jeu</p>
+      ${renderQuestionCard(gs.currentQuestion?.q)}
+    </div>`;
+}
+
+function renderAnswerRevealedPhase(gs, active) {
+  return `
+    <div class="display-qa-block">
+      <span class="display-theme-badge">${gs.currentTheme?.theme || ''}</span>
+      <p class="display-q-player">Tour de <strong>${active?.name || '—'}</strong></p>
+      ${renderQuestionCard(gs.currentQuestion?.q)}
+      ${renderAnswerCard(gs.currentQuestion?.a)}
+    </div>`;
+}
+
+function renderDuelQuestionPhase(gs) {
+  const c = gs.players[gs.duelChallengerIndex];
+  const o = gs.players[gs.duelOpponentIndex];
+  const q = gs.duelQuestion?.q || '';
+  const a = gs.duelQuestion?.a || '';
+  return `
+    <div class="display-qa-block display-duel-qa">
+      <p class="display-duel-title">⚔️ DUEL ⚔️</p>
+      <div class="display-duel-matchup">
+        <span class="display-duel-fighter">${c?.name || '—'}</span>
+        <span class="display-duel-vs">VS</span>
+        <span class="display-duel-fighter">${o?.name || '—'}</span>
+      </div>
+      ${renderDisplayTimer()}
+      <span class="display-theme-badge">${gs.duelTheme || 'Duel flash'}</span>
+      ${renderQuestionCard(q, 'Question duel')}
+      ${gs.duelAnswerRevealed
+        ? renderAnswerCard(a, 'Réponse')
+        : '<p class="display-duel-sub">Soyez vifs !</p>'}
+    </div>`;
+}
+
 function animateScoreBars() {
   requestAnimationFrame(() => {
     document.querySelectorAll('.display-score-bar-fill').forEach(el => {
@@ -247,25 +312,12 @@ function renderDisplay() {
 
     case 'question':
       setStageTheme('default');
-      el.innerHTML = `
-        <span class="display-theme-badge">${gs.currentTheme?.theme || ''}</span>
-        <p class="display-q-player"><strong>${active?.name}</strong> répond</p>
-        <div class="display-timer-huge${timeLeft <= 5 ? ' timer-danger' : ''}" id="display-timer">${timeLeft}</div>
-        <p class="display-q-points">${gs.currentQuestion?.points || '—'} points en jeu</p>`;
+      el.innerHTML = renderQuestionPhase(gs, active);
       break;
 
     case 'answer_revealed':
       setStageTheme('default');
-      el.innerHTML = `
-        <span class="display-theme-badge">${gs.currentTheme?.theme || ''}</span>
-        <p class="display-q-player">Tour de <strong>${active?.name}</strong></p>
-        <div class="display-q-card">
-          <p>${gs.currentQuestion?.q || ''}</p>
-        </div>
-        <div class="display-q-card display-a-card">
-          <div class="display-a-label">Réponse</div>
-          <p>${gs.currentQuestion?.a || ''}</p>
-        </div>`;
+      el.innerHTML = renderAnswerRevealedPhase(gs, active);
       break;
 
     case 'scores':
@@ -289,15 +341,22 @@ function renderDisplay() {
     }
 
     case 'auction_setup':
-    case 'auction_play':
       setStageTheme('auction');
       el.innerHTML = `
         <p class="display-auction-title">🗣️ ENCHÈRES</p>
         <p class="display-auction-subject">${gs.auctionSubject}</p>
-        ${gs.phase === 'auction_play' ? `
+        <p class="display-duel-sub">📢 ${gs.players[gs.auctionStarterIndex]?.name} ouvre les enchères</p>`;
+      break;
+
+    case 'auction_play':
+      setStageTheme('auction');
+      el.innerHTML = `
+        <div class="display-qa-block">
+          <p class="display-auction-title">🗣️ ENCHÈRES</p>
+          <p class="display-auction-subject">${gs.auctionSubject}</p>
           <p class="display-auction-player">${gs.players[gs.auctionWinnerIndex]?.name}</p>
-          <div class="display-timer-huge display-auction-timer${timeLeft <= 10 ? ' timer-danger' : ''}" id="display-timer">${timeLeft}</div>
-        ` : `<p class="display-duel-sub">📢 ${gs.players[gs.auctionStarterIndex]?.name} ouvre les enchères</p>`}`;
+          ${renderDisplayTimer()}
+        </div>`;
       break;
 
     case 'auction_result':
@@ -309,8 +368,7 @@ function renderDisplay() {
       break;
 
     case 'duel_setup':
-    case 'duel_transition':
-    case 'duel_question': {
+    case 'duel_transition': {
       setStageTheme('duel');
       const c = gs.players[gs.duelChallengerIndex];
       const o = gs.players[gs.duelOpponentIndex];
@@ -322,19 +380,14 @@ function renderDisplay() {
             <span class="display-duel-vs">VS</span>
             <span class="display-duel-fighter">${o?.name}</span>
           </div>
-        ` : `<p class="display-duel-sub"><strong>${c?.name}</strong> choisit sa cible…</p>`}
-        ${gs.phase === 'duel_question' ? `
-          <div class="display-q-card" style="margin-top:2rem;">
-            <p>[${gs.duelTheme}] ${gs.duelQuestion?.q || ''}</p>
-          </div>
-          ${gs.duelAnswerRevealed ? `
-            <div class="display-q-card display-a-card">
-              <div class="display-a-label">Réponse</div>
-              <p>${gs.duelQuestion?.a || ''}</p>
-            </div>` : '<p class="display-duel-sub">Soyez vifs !</p>'}
-        ` : ''}`;
+        ` : `<p class="display-duel-sub"><strong>${c?.name}</strong> choisit sa cible…</p>`}`;
       break;
     }
+
+    case 'duel_question':
+      setStageTheme('duel');
+      el.innerHTML = renderDuelQuestionPhase(gs);
+      break;
 
     default:
       setStageTheme('default');
